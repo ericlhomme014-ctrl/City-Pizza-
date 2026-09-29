@@ -1,0 +1,74 @@
+div class="card">
+    <div class="header">
+        <div class="logo-area">
+            <h1>City Pizza</h1>
+            <p>Le goût de l'Italie à Angoulême</p>
+        </div>
+        <div class="address">
+            11 rue de Genève,<br>16000 Angoulême
+        </div>
+    </div>
+
+    <div class="banner-img"></div>
+
+    <div class="card-title">Carte de fidélité</div>
+
+    <!-- Grille des 10 tampons -->
+    <div class="grid" id="stampGrid">
+        <!-- Généré par JavaScript -->
+    </div>
+
+    <div class="promo-banner">
+        AU BOUT DE 10 PIZZAS<br>= 1 PIZZA OFFERTE !
+    </div>
+
+    <div class="actions">
+        <button class="btn" onclick="installApp()">📲 Ajouter à l'écran d'accueil</button>
+        <button class="btn btn-admin" onclick="adminAction()">🔒 Mode Pizzaiolo (Ajouter un tampon)</button>
+    </div>
+</div>
+
+<script>
+    // Gestion des tampons sauvegardés dans le téléphone du client
+    let stamps = JSON.parse(localStorage.getItem('cityPizzaStamps')) || 2; // Par défaut 2 pour l'exemple
+
+    function renderGrid() {
+        const grid = document.getElementById('stampGrid');
+        grid.innerHTML = '';
+        for (let i = 1; i <= 10; i++) {
+            const div = document.createElement('div');
+            div.className = `stamp ${i <= stamps ? 'validated' : ''}`;
+            div.innerText = i;
+            grid.appendChild(div);
+        }
+    }
+
+    // Fonction pour que le commerçant ajoute un tampon (sécurisé par code PIN simple, ex: "1234")
+    function adminAction() {
+        let pin = prompt("Entrez le code PIN du pizzaiolo :");
+        if (pin === "1234") { // Vous pourrez changer ce code
+            if (stamps < 10) {
+                stamps++;
+                localStorage.setItem('cityPizzaStamps', stamps);
+                renderGrid();
+                alert("Tampon ajouté avec succès !");
+            } else {
+                if(confirm("La carte est pleine (10 pizzas) ! Réinitialiser la carte pour offrir la pizza ?")) {
+                    stamps = 0;
+                    localStorage.setItem('cityPizzaStamps', stamps);
+                    renderGrid();
+                }
+            }
+        } else if (pin !== null) {
+            alert("Code PIN incorrect.");
+        }
+    }
+
+    // Message indicatif pour l'ajout à l'écran d'accueil
+    function installApp() {
+        alert("Pour installer la carte : \n- Sur iPhone : Appuyez sur le bouton de partage de Safari puis 'Sur l'écran d'accueil'.\n- Sur Android : Appuyez sur les 3 points du navigateur puis 'Ajouter à l'écran d'accueil'.");
+    }
+
+    // Initialisation de l'affichage au chargement
+    renderGrid();
+</script>
